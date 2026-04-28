@@ -6,15 +6,27 @@ const operacion = params[0];
 let resultado
 
 const main = async () => {
-switch(operacion) {
+    try {
+        switch(operacion) {
     case "get":
         resultado = await getUsers()
+        if (Array.isArray(resultado)) {
+            console.table(resultado)
+        } else {
+            console.log(resultado)
+        }
         break
     case "getById":
         resultado = await getUserById(params[1])
+        if (resultado && typeof resultado === "object") {
+            console.table([resultado]) // console.table espera un array
+        } else {
+            console.log(resultado)
+        }
         break
     case "add":
         resultado = await createUsers(params[1], params[2], params[3])
+        console.log(resultado)
         break
     case "update": {
         const username = params[1];
@@ -26,40 +38,29 @@ switch(operacion) {
         resultado = "ID requerido";
         break;
       }
-
-      //Buscar manera de resolver esto sin usar mongoose ya que no se puede
-    //   if (!mongoose.Types.ObjectId.isValid(id)) {
-    //     resultado = "ID inválido";
-    //     break;
-    //   }
-
-      // const error = validateUser(username, email, password);
-      // if (error) {
-      //   resultado = error;
-      //   break;
-      // }
-
       resultado = await updateUser(id, { username, email, password });
-
-    //   if (!resultado) {
-    //     resultado = "Usuario no encontrado";
-    //   }
-
+      console.log(resultado);
       break;
     }
     case "delete":
         resultado = await deleteUser(params[1])
+        console.log(resultado)
         break
     case "deleteAll":
         resultado = await deleteAllUsers()
+        console.log(resultado)
         break;
     default:
-        resultado = ("Operación invalida");
-  }
-        console.log(resultado);
+        resultado = ("Operación invalida - utilizar get, getById, add, update, delete o deleteAll");
+        console.log(resultado)
+    }
+    } catch (error) {
+        console.log("Error de conexión a la base de datos:", error.message);
+    }
     setTimeout(() => {
         process.exit(1)
     }, 1000)
 }
+
 
 main();

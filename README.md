@@ -18,9 +18,9 @@ Aplicación de línea de comandos (CLI) desarrollada en Node.js que permite gest
 Crear la base de datos y la tabla:
 
 ```sql
-CREATE DATABASE cli_utn;
+CREATE DATABASE sebastian_winter_cli_trabajo_practico;
 
-USE cli_utn;
+USE sebastian_winter_cli_trabajo_practico;
 
 CREATE TABLE users (
   id VARCHAR(255) PRIMARY KEY,
@@ -48,7 +48,7 @@ const db = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "",
-  database: "cli_utn"
+  database: "sebastian_winter_cli_trabajo_practico"
 });
 ```
 

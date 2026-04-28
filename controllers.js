@@ -1,17 +1,15 @@
 import { db } from "./config.js"
+import crypto from "node:crypto";
 
 const getUsers = async () => {
     const q = `SELECT * FROM users`
     const [response] = await db.query(q)
-    return response;
-
-    if (response.serverStatus === 2) {
-        return "Lista de susuarios";
-    }
-
-    if (!users) {
+    
+    if (response.length === 0) {
         return "No hay usuarios registrados";
     }
+
+    return response;
 }
 
 // Funcion extra para traer a un usuario especifico a partir de su ID
@@ -23,12 +21,11 @@ const getUserById = async (id) => {
     const q = `SELECT * FROM users WHERE id = ?`
     const [response] = await db.query(q, [id])
     
-
-    return response[0]; // Solo el usuario
-
-    if (response.serverStatus === 2) {
-        return "Usuario encontrado";
+    if (response.length === 0) {
+        return "Usuario no encontrado";
     }
+
+    return response[0];
 }
 
 const createUsers = async (username, email, password) => {
@@ -42,7 +39,7 @@ const createUsers = async (username, email, password) => {
         return "Por favor ingrese un correo electronico válido (@gmail.com)"
     }
 
-    if (!password.length >= 5) {
+    if (password.length < 5) {
         return "La contraseña debe contener como mínimo 5 caracteres"
     }
     // const newUser = {
@@ -56,21 +53,22 @@ const createUsers = async (username, email, password) => {
 
     const [response] = await db.query(q, [crypto.randomUUID(), username, email, password])
 
-    if (response.serverStatus === 2) {
         return "Usuario creado exitosamente";
-    }
 }
 
 const updateUser = async (id, updates) => {
     // Se pide el username, email, password y ID en ese orden, sino no funciona
     const q = `UPDATE users SET username = ?, email = ?, password = ? WHERE id = ?`
+    
+    if (!id) {
+        return "ID requerido"
+    }
+
     const { username, email, password } = updates;
     const [response] = await db.query(q, [username, email, password, id])
 
     // Validaciones para el usuario, se pide un ID y se valida que exista.
-    if (!id) {
-        return "ID requerido"
-    }
+    
 
     if (response.affectedRows === 0) {
         return "Usuario no encontrado";
@@ -82,20 +80,19 @@ const updateUser = async (id, updates) => {
 
 const deleteUser = async (id) => {
     const q = ` DELETE from users WHERE id = ?;`
-    const [response] = await db.query(q, [id]);
-
+    
     // Validaciones para pedir una ID en caso de no enviarla, asegurarse de que haya un usuario con esa id, y y funciono dar el aviso.
     if (!id) {
         return "ID requerido"
     }
 
+    const [response] = await db.query(q, [id]);
+
     if (response.affectedRows === 0) {
         return "Usuario no encontrado";
     }
     
-    if (response.serverStatus === 2) {
-        return "Usuario eliminado exitosamente"
-    }
+    return "Usuario eliminado exitosamente";
 }
 
 // Funcion extra para eliminar todos los usuarios juntos
