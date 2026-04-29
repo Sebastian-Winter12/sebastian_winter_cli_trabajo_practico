@@ -36,12 +36,16 @@ const createUsers = async (username, email, password) => {
         return "Data invalida, necesitas enviar username, email y password para resistrar un usuario"
     }
 
-    if (!email.endsWith("@gmail.com")) {
-        return "Por favor ingrese un correo electronico válido (@gmail.com)"
+    if (!email.endsWith("@gmail.com") || email.indexOf("@") === 0) {
+        return "Por favor ingrese un correo electronico válido (MiNombre@gmail.com)"
     }
 
     if (password.length < 5) {
         return "La contraseña debe contener como mínimo 5 caracteres"
+    }
+
+    if (username.length < 3) {
+        return "El username debe tener al menos 3 caracteres"
     }
 
     const q = `INSERT INTO users (id, username, email, password) VALUES (?,?,?,?)`
@@ -56,12 +60,25 @@ const updateUser = async (id, updates) => {
     // Se pide el username, email, password y ID en ese orden, sino no funciona
     const q = `UPDATE users SET username = ?, email = ?, password = ? WHERE id = ?`
     
-    // Validaciones para el usuario, se pide un ID y se valida que exista.
+    // Validaciones para el usuario, se pide un ID y se valida que exista, y para que el emial sea válido.
     if (!id) {
         return "ID requerido"
     }
 
     const { username, email, password } = updates;
+
+    if (username.length < 3) {
+        return "El username debe tener al menos 3 caracteres"
+    }
+
+    if (!email.endsWith("@gmail.com") || email.indexOf("@") === 0) {
+        return "Por favor ingrese un correo electronico válido (MiNombre@gmail.com)"
+    }
+
+    if (password.length < 5) {
+        return "La contraseña debe contener como mínimo 5 caracteres"
+    }
+
     const [response] = await db.query(q, [username, email, password, id])
 
     if (response.affectedRows === 0) {
