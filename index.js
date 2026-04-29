@@ -10,9 +10,11 @@ const main = async () => {
         switch(operacion) {
     case "get":
         resultado = await getUsers()
+        // si el resultado es un array, se muestra en formato tabla, sino se muestra el string de error o mensaje correspondiente.
         if (Array.isArray(resultado)) {
             console.table(resultado)
         } else {
+            // se agrega el console.log para mostrar el resultado que de directamente desde la funcion.
             console.log(resultado)
         }
         break
@@ -21,11 +23,13 @@ const main = async () => {
         if (resultado && typeof resultado === "object") {
             console.table([resultado]) // console.table espera un array
         } else {
+            // se agrega el console.log para mostrar el resultado que de directamente desde la funcion.
             console.log(resultado)
         }
         break
     case "add":
         resultado = await createUsers(params[1], params[2], params[3])
+        // se agrega el console.log para mostrar el resultado que de directamente desde la funcion.
         console.log(resultado)
         break
     case "update": {
@@ -39,19 +43,23 @@ const main = async () => {
         break;
       }
       resultado = await updateUser(id, { username, email, password });
+      // se agrega el console.log para mostrar el resultado que de directamente desde la funcion.
       console.log(resultado);
       break;
     }
     case "delete":
         resultado = await deleteUser(params[1])
+        // se agrega el console.log para mostrar el resultado que de directamente desde la funcion.
         console.log(resultado)
         break
     case "deleteAll":
         resultado = await deleteAllUsers()
+        // se agrega el console.log para mostrar el resultado que de directamente desde la funcion.
         console.log(resultado)
         break;
     default:
         resultado = ("Operación invalida - utilizar get, getById, add, update, delete o deleteAll");
+        // se agrega el console.log para mostrar el resultado que de directamente desde la funcion.
         console.log(resultado)
     }
     } catch (error) {

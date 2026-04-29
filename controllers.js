@@ -1,6 +1,7 @@
 import { db } from "./config.js"
 import crypto from "node:crypto";
 
+// Funcion para traer a todos los usuarios registrados en la base de datos.
 const getUsers = async () => {
     const q = `SELECT * FROM users`
     const [response] = await db.query(q)
@@ -28,9 +29,9 @@ const getUserById = async (id) => {
     return response[0];
 }
 
+// Funcion pra crear un nuevo usuario
 const createUsers = async (username, email, password) => {
-    // VALIDAR
-    // tambien se puede escribir directamente !username || !email || !password
+    // Validamos que se envien los datos necesarios, con el formato y longitud correspondiente.
     if (username === undefined || email === undefined || password === undefined) {
         return "Data invalida, necesitas enviar username, email y password para resistrar un usuario"
     }
@@ -42,12 +43,6 @@ const createUsers = async (username, email, password) => {
     if (password.length < 5) {
         return "La contraseña debe contener como mínimo 5 caracteres"
     }
-    // const newUser = {
-    //     id: crypto.randomUUID(),
-    //     username: username,
-    //     email: email,
-    //     password: password
-    // }
 
     const q = `INSERT INTO users (id, username, email, password) VALUES (?,?,?,?)`
 
@@ -56,19 +51,18 @@ const createUsers = async (username, email, password) => {
         return "Usuario creado exitosamente";
 }
 
+// Funcion para actualizar un usuario existente.
 const updateUser = async (id, updates) => {
     // Se pide el username, email, password y ID en ese orden, sino no funciona
     const q = `UPDATE users SET username = ?, email = ?, password = ? WHERE id = ?`
     
+    // Validaciones para el usuario, se pide un ID y se valida que exista.
     if (!id) {
         return "ID requerido"
     }
 
     const { username, email, password } = updates;
     const [response] = await db.query(q, [username, email, password, id])
-
-    // Validaciones para el usuario, se pide un ID y se valida que exista.
-    
 
     if (response.affectedRows === 0) {
         return "Usuario no encontrado";
@@ -78,6 +72,7 @@ const updateUser = async (id, updates) => {
 
 }
 
+// Funcion para eliminar un usuario existente a partir de su ID
 const deleteUser = async (id) => {
     const q = ` DELETE from users WHERE id = ?;`
     

@@ -124,14 +124,6 @@ npm run dev deleteAll
 
 ---
 
-## 🧠 Notas
-
-* Todas las operaciones son asíncronas
-* Se utiliza `mysql2/promise`
-* El ID se genera automáticamente con `crypto.randomUUID()`
-
----
-
 ## 🚀 Estado del proyecto
 
 ✔ Funcional (CRUD completo)
